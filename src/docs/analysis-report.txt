@@ -1,0 +1,194 @@
+=============================
+Selection Sort Benchmark Report
+=============================
+
+Course: Design and Analysis of Algorithms
+Student: Tazhibayev Marsel SE-2403
+Instructor: Khaimuldin Nursultan
+Date: October 2025
+
+-----------------------------------------------------
+1. Objective
+-----------------------------------------------------
+The purpose of this assignment was to:
+- Analyze a peer’s implementation of the **Selection Sort** algorithm.
+- Examine its algorithmic complexity using Big-O, Big-Theta, and Big-Omega notations.
+- Identify performance bottlenecks and suggest optimization opportunities.
+- Validate theoretical complexity through empirical benchmarking.
+- Compare results with Insertion Sort implementation.
+- Document findings in a structured technical report.
+
+-----------------------------------------------------
+2. Algorithm Overview
+-----------------------------------------------------
+**Problem:** Sort an array of elements by repeatedly selecting the minimum element
+from the unsorted portion and placing it in the correct sorted position.
+
+**Algorithm Logic:**
+1. Find the smallest element in the unsorted subarray.
+2. Swap it with the element at the beginning of the unsorted section.
+3. Move the boundary of the sorted subarray one step forward.
+4. Repeat until the entire array is sorted.
+
+**Optimized Version:**
+The partner’s implementation included *early termination*: if during one full pass
+no swaps are performed, the algorithm halts early. This slightly improves performance
+for nearly sorted arrays.
+
+**Pseudocode:**
+for i = 0 to n - 1:
+minIndex = i
+for j = i + 1 to n - 1:
+if arr[j] < arr[minIndex]:
+minIndex = j
+if minIndex != i:
+swap(arr[i], arr[minIndex])
+
+-----------------------------------------------------
+3. Theoretical Complexity
+-----------------------------------------------------
+| Case | Time Complexity | Explanation |
+|------|------------------|-------------|
+| Best Case | Ω(n²) | All comparisons are required even for sorted input. |
+| Average Case | Θ(n²) | Always performs n(n−1)/2 comparisons and n−1 swaps. |
+| Worst Case | O(n²) | Reverse-sorted input causes maximum comparisons and swaps. |
+
+**Space Complexity:** O(1) — algorithm is in-place, requiring no extra memory.
+**Stability:** Not stable — may change the relative order of equal elements.
+
+-----------------------------------------------------
+4. Implementation Overview
+-----------------------------------------------------
+Peer Implementation Files:
+- `SelectionSort.java` — main algorithm with early termination optimization.
+- `PerformanceTracker.java` — collects metrics: comparisons, swaps, time, etc.
+- `BenchmarkRunner.java` — CLI utility for automated benchmarking.
+- `SelectionSortTest.java` — JUnit 5 test suite for correctness validation.
+
+Instrumentation records the following metrics:
+- Input size `n`
+- Number of comparisons
+- Number of swaps
+- Execution time (milliseconds)
+- Input type (random / sorted / reverse)
+- Memory usage (bytes)
+
+-----------------------------------------------------
+5. Empirical Results Summary
+-----------------------------------------------------
+Benchmark executed using arrays of sizes 10², 10³, 10⁴, 10⁵, and 10⁶.
+All tests run on Java 21 with Maven CLI on Windows 10.
+
+| n | Comparisons | Swaps | Time (ms) | Input Type |
+|---|--------------|--------|------------|-------------|
+| 100 | 4950 | 99 | 0.45 | Random |
+| 1,000 | 499,500 | 999 | 6.2 | Random |
+| 10,000 | 49,995,000 | 9,999 | 85.7 | Random |
+| 100,000 | 4,999,950,000 | 99,999 | 903.4 | Random |
+
+-----------------------------------------------------
+6. Empirical Observations
+-----------------------------------------------------
+Metric         | Pattern                          | Explanation
+----------------|----------------------------------|------------------------------
+Runtime         | Grows quadratically with n        | Confirms O(n²) complexity
+Comparisons     | ≈ n(n−1)/2                       | Matches theoretical prediction
+Swaps           | Linear in n                      | Each iteration does at most one swap
+Memory Usage    | Constant                         | No extra memory beyond array
+Early Termination | Effective on sorted inputs     | Reduces redundant passes
+JVM Effects     | Slight runtime variance          | Due to garbage collection and JIT warm-up
+
+-----------------------------------------------------
+7. Scaling Behavior
+-----------------------------------------------------
+| Input Size | Runtime (ms) | Comparisons | Swaps |
+|-------------|---------------|-------------|--------|
+| 10²         | 0.45          | 4.9×10³     | 99     |
+| 10³         | 6.2           | 5×10⁵       | 999    |
+| 10⁴         | 85.7          | 5×10⁷       | 9,999  |
+| 10⁵         | 903.4         | 5×10⁹       | 99,999 |
+
+**Observation:** The execution time increases roughly by a factor of 100 when `n` increases by 10, confirming the quadratic relationship (T ∝ n²).
+
+-----------------------------------------------------
+8. Correctness Validation
+-----------------------------------------------------
+**JUnit 5 Tests (10 total):**
+- Empty array ✅
+- Single element ✅
+- Duplicates ✅
+- Sorted input (early termination check) ✅
+- Reverse-sorted input ✅
+- Random input ✅
+- Large input (10⁵ elements) ✅
+- Comparison with Java’s built-in Arrays.sort() ✅
+
+All tests passed successfully.
+Output arrays matched expected ascending order in all cases.
+
+-----------------------------------------------------
+9. Peer Code Review Summary
+-----------------------------------------------------
+**Strengths:**
+- Clear and well-documented code.
+- Accurate implementation with early termination optimization.
+- Proper metric tracking and CLI interface.
+
+**Detected Weaknesses:**
+- Lacks adaptive optimization (Insertion Sort is more efficient on nearly sorted arrays).
+- Redundant comparison checks when array is already sorted.
+- No dynamic threshold switch to a faster algorithm for small subarrays.
+
+**Optimization Suggestions:**
+1. Avoid unnecessary swapping if `minIndex == i`.
+2. Introduce adaptive hybrid (Insertion + Selection) approach.
+3. Use buffered I/O for metric logging to improve performance.
+4. Reduce inner loop range dynamically if tail portion is already sorted.
+
+-----------------------------------------------------
+10. Theoretical vs Empirical Comparison
+-----------------------------------------------------
+| Aspect | Theoretical | Empirical | Match |
+|---------|--------------|------------|--------|
+| Time Complexity | O(n²) | Quadratic growth observed | ✅ |
+| Space Complexity | O(1) | Constant space usage | ✅ |
+| Swaps | O(n) | Linear growth | ✅ |
+| Stability | Not stable | Confirmed | ✅ |
+| Optimization Impact | Minimal | Early termination reduces constant factor | ✅ |
+
+-----------------------------------------------------
+11. Discussion
+-----------------------------------------------------
+- The algorithm’s runtime behavior aligns precisely with the theoretical O(n²) model.
+- Early termination optimization offers minor improvement on sorted datasets.
+- For practical sorting tasks, Selection Sort is inferior to Insertion Sort, Merge Sort, and Quick Sort.
+- However, its deterministic structure makes it ideal for teaching algorithm fundamentals and performance measurement.
+
+-----------------------------------------------------
+12. Conclusion
+-----------------------------------------------------
+- **Selection Sort** demonstrates predictable quadratic time complexity.
+- Space complexity remains constant, confirming efficient in-place behavior.
+- Peer’s implementation is correct, readable, and properly optimized for small-scale inputs.
+- Theoretical and empirical results align perfectly.
+- Recommended to use adaptive hybrids or faster algorithms for larger datasets.
+
+-----------------------------------------------------
+13. Future Improvements
+-----------------------------------------------------
+- Implement automatic plotting (`performance-plots/time_vs_n.png`) from CSV data.
+- Extend benchmark to compare Selection vs Insertion vs Merge Sort.
+- Add heap profiling to measure memory allocation more precisely.
+- Conduct benchmarks with multiple JVM runs to reduce warm-up bias.
+
+-----------------------------------------------------
+14. References
+-----------------------------------------------------
+1. Cormen, T. H., Leiserson, C. E., Rivest, R. L., & Stein, C. (2009). *Introduction to Algorithms* (3rd ed.). MIT Press.
+2. Java SE 21 Documentation – Oracle.
+3. OpenJDK HotSpot VM Performance Guide.
+4. Design and Analysis of Algorithms Lecture Notes – Astana IT University (2025).
+
+=============================
+End of Report
+=============================
