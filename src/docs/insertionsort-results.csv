@@ -1,0 +1,2 @@
+Algorithm,Array Size,Comparisons,Swaps,Array Accesses,Elapsed Time (ms)
+InsertionSort,500,61794,61303,185398,3
