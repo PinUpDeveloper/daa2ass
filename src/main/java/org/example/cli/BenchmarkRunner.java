@@ -7,19 +7,21 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class BenchmarkRunner {
-
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter array size (e.g. 1000): ");
         int n = scanner.nextInt();
 
         int[] arr = generateRandomArray(n);
+
         PerformanceTracker tracker = new PerformanceTracker();
         InsertionSort sorter = new InsertionSort(tracker);
 
         System.out.println("Sorting " + n + " elements...");
         sorter.sort(arr);
+
         tracker.printReport();
+        System.out.println("Working directory: " + System.getProperty("user.dir"));
 
         if (isSorted(arr)) {
             System.out.println("Array sorted correctly ✅");
