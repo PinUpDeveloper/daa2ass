@@ -11,28 +11,59 @@ public class PerformanceTracker {
     private long arrayAccesses = 0;
     private long startTime;
     private long endTime;
+    private boolean running = false;
 
     public void start() {
         comparisons = swaps = arrayAccesses = 0;
         startTime = System.nanoTime();
+        running = true;
     }
 
     public void stop() {
-        endTime = System.nanoTime();
+        if (running) {
+            endTime = System.nanoTime();
+            running = false;
+        }
     }
 
-    public void incrementComparisons() { comparisons++; }
-    public void incrementSwaps() { swaps++; }
-    public void incrementArrayAccesses() { arrayAccesses++; }
+    public void incrementComparisons() {
+        comparisons++;
+    }
 
-    public long getElapsedTimeNano() { return endTime - startTime; }
-    public long getElapsedTimeMillis() { return (endTime - startTime) / 1_000_000; }
+    public void incrementSwaps() {
+        swaps++;
+    }
 
-    public long getComparisons() { return comparisons; }
-    public long getSwaps() { return swaps; }
-    public long getArrayAccesses() { return arrayAccesses; }
+    public void incrementArrayAccesses() {
+        arrayAccesses++;
+    }
+
+    public void incrementArrayAccesses(int count) {
+        arrayAccesses += count;
+    }
+
+    public long getElapsedTimeNano() {
+        return endTime - startTime;
+    }
+
+    public long getElapsedTimeMillis() {
+        return (endTime - startTime) / 1_000_000;
+    }
+
+    public long getComparisons() {
+        return comparisons;
+    }
+
+    public long getSwaps() {
+        return swaps;
+    }
+
+    public long getArrayAccesses() {
+        return arrayAccesses;
+    }
 
     public void printReport() {
+        if (running) stop();
         System.out.println("=== Performance Report ===");
         System.out.println("Comparisons: " + comparisons);
         System.out.println("Swaps: " + swaps);
@@ -42,8 +73,10 @@ public class PerformanceTracker {
     }
 
     public void saveToCSV(int n, String algorithmName) {
+        if (running) stop();
+
         try {
-            Path dir = Path.of("docs", "performance-plots");
+            Path dir = Path.of(System.getProperty("user.dir"), "docs", "performance-plots");
             Files.createDirectories(dir);
             Path filePath = dir.resolve(algorithmName + "-results.csv");
 
